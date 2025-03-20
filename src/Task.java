@@ -1,11 +1,11 @@
 public class Task {
 
-    protected int id;
+    protected Integer id;
     protected String name;
     protected String description;
     protected Status status;
 
-    public Task (int id, String name, String description) {
+    public Task (Integer id, String name, String description) {
         this.id = id;
         this.name = name;
         this.description = description;

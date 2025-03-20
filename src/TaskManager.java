@@ -8,8 +8,19 @@ public class TaskManager {
     private final HashMap<Integer, Epic> epics = new HashMap<>();
     private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
 
-    public int generateId() {
+    private int generateId() {
         return idCounter++;
+    }
+    public Integer createTaskId() {
+        return generateId();
+    }
+
+    public Integer createEpicId() {
+        return generateId();
+    }
+
+    public Integer createSubtaskId() {
+        return generateId();
     }
 
     public void addTask(Task task) {
@@ -17,6 +28,9 @@ public class TaskManager {
     }
 
     public void addEpic(Epic epic) {
+        if (epic.getStatus() == null) {
+            epic.setStatus(Status.NEW);
+        }
         epics.put(epic.getId(), epic);
     }
 
@@ -82,6 +96,7 @@ public class TaskManager {
                 }
                 if (subtask.getStatus() == Status.IN_PROGRESS) {
                     anyInProgress = true;
+                    break;
                 }
             }
         }
@@ -116,5 +131,38 @@ public class TaskManager {
 
     public List<Subtask> getAllSubtasks() {
         return new ArrayList<>(subtasks.values());
+    }
+    public List<Subtask> getSubtasksByEpicId(int epicId) {
+        Epic epic = epics.get(epicId);
+        if (epic == null) {
+            System.out.println("Ошибка: данный эпик не найден.");
+            return new ArrayList<>();
+        }
+
+        List<Subtask> subtaskList = new ArrayList<>();
+        for (int subtaskId : epic.getSubtaskIds()) {
+            subtaskList.add(subtasks.get(subtaskId));
+        }
+        return subtaskList;
+    }
+
+    public void removeAllTasks() {
+        tasks.clear();
+    }
+
+    public void removeAllSubtasks() {
+        subtasks.clear();
+        for (Epic epic : epics.values()) {
+            epic.setStatus(Status.NEW);
+        }
+    }
+
+    public void removeAllEpics() {
+        for (Epic epic : epics.values()) {
+            for (int subtaskId : epic.getSubtaskIds()) {
+                subtasks.remove(subtaskId);
+            }
+        }
+        epics.clear();
     }
 }
