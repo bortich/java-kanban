@@ -1,77 +1,94 @@
 public class Main {
     public static void main(String[] args) {
-        TaskManager manager = Managers.getDefault();
+        TaskManager taskManager = Managers.getDefault();
+        HistoryManager historyManager = Managers.getDefaultHistory();
 
-        Task task1 = new Task(manager.createTaskId(), "Купить продукты", "Купить хлеб и молоко");
-        manager.addTask(task1);
-        manager.getTask(task1.getId());
+        Task task1 = new Task("Купить продукты", "Сходить в магазин и купить продукты");
+        Task task2 = new Task("Сделать домашку", "Написать домашку по математике");
+        Task task3 = new Task("Поехать в спортзал", "Пойти на тренировку в спортзал");
 
-        Task task2 = new Task(manager.createTaskId(), "Сделать домашку", "Решить задачи по математике");
-        task2.setStatus(Status.IN_PROGRESS);
-        manager.addTask(task2);
-        manager.getTask(task2.getId());
+        taskManager.addTask(task1);
+        taskManager.addTask(task2);
+        taskManager.addTask(task3);
 
-        Task task3 = new Task(manager.createTaskId(), "Поехать в спортзал", "Провести тренировку");
-        task3.setStatus(Status.DONE);
-        manager.addTask(task3);
-        manager.getTask(task3.getId());
+        Epic epic1 = new Epic("Подготовка к экзамену", "Подготовиться к экзамену по программированию");
+        Epic epic2 = new Epic("Путешествие", "Планирование и подготовка к путешествию");
 
-        Epic epic1 = new Epic(manager.createEpicId(), "Подготовка к экзамену", "Подготовиться к экзаменам");
-        manager.addEpic(epic1);
-        manager.getEpic(epic1.getId());
+        taskManager.addEpic(epic1);
+        taskManager.addEpic(epic2);
 
-        Epic epic2 = new Epic(manager.createEpicId(), "Путешествие", "Запланировать отпуск и поездку");
-        manager.addEpic(epic2);
-        manager.getEpic(epic2.getId());
+        Subtask subtask1 = new Subtask("Учить теорию", "Прочитать теорию по программированию", epic1.getId());
+        Subtask subtask2 = new Subtask("Решать задачи", "Решить задачи по программированию", epic1.getId());
+        Subtask subtask3 = new Subtask("Паковать вещи", "Паковать вещи для путешествия", epic2.getId());
 
-        Subtask subtask1 = new Subtask(manager.createSubtaskId(), "Выучить главы", "Прочитать главы 1-3", epic1.getId());
-        manager.addSubtask(subtask1);
-        manager.getSubtask(subtask1.getId());
+        taskManager.addSubtask(subtask1);
+        taskManager.addSubtask(subtask2);
+        taskManager.addSubtask(subtask3);
 
-        Subtask subtask2 = new Subtask(manager.createSubtaskId(), "Провести практическую работу", "Подготовить презентацию", epic1.getId());
-        subtask2.setStatus(Status.IN_PROGRESS);
-        manager.addSubtask(subtask2);
-        manager.getSubtask(subtask2.getId());
+        task1.setStatus(Status.IN_PROGRESS);
+        taskManager.updateTask(task1);
 
-        Subtask subtask3 = new Subtask(manager.createSubtaskId(), "Забронировать билеты", "Выбрать и забронировать билеты в Турцию", epic2.getId());
+        task2.setStatus(Status.DONE);
+        taskManager.updateTask(task2);
+
+        task3.setStatus(Status.NEW);
+        taskManager.updateTask(task3);
+
+        subtask1.setStatus(Status.IN_PROGRESS);
+        taskManager.updateSubtask(subtask1);
+
+        subtask2.setStatus(Status.DONE);
+        taskManager.updateSubtask(subtask2);
+
         subtask3.setStatus(Status.NEW);
-        manager.addSubtask(subtask3);
-        manager.getSubtask(subtask3.getId());
+        taskManager.updateSubtask(subtask3);
 
-        Subtask subtask4 = new Subtask(manager.createSubtaskId(), "Собрать чемодан", "Собрать все вещи для поездки", epic2.getId());
-        subtask4.setStatus(Status.DONE);
-        manager.addSubtask(subtask4);
-        manager.getSubtask(subtask4.getId());
+        taskManager.getTask(task1.getId());
+        taskManager.getTask(task2.getId());
+        taskManager.getTask(task3.getId());
 
-        System.out.println("История просмотров:");
-        for (Task task : manager.getHistory()) {
-            System.out.println(task);
-        }
+        taskManager.getEpic(epic1.getId());
+        taskManager.getEpic(epic2.getId());
 
-        System.out.println("\nВсе задачи:");
-        for (Task task : manager.getAllTasks()) {
+        taskManager.getSubtask(subtask1.getId());
+        taskManager.getSubtask(subtask2.getId());
+        taskManager.getSubtask(subtask3.getId());
+
+        System.out.println("Все задачи:");
+        for (Task task : taskManager.getAllTasks()) {
             System.out.println(task);
         }
 
         System.out.println("\nВсе эпики:");
-        for (Epic epic : manager.getAllEpics()) {
+        for (Epic epic : taskManager.getAllEpics()) {
             System.out.println(epic);
         }
 
-        System.out.println("\nВсе сабтаски:");
-        for (Subtask subtask : manager.getAllSubtasks()) {
+        System.out.println("\nПодзадачи для эпика 'Подготовка к экзамену':");
+        for (Subtask subtask : taskManager.getSubtasksByEpicId(epic1.getId())) {
             System.out.println(subtask);
         }
 
-        System.out.println("\nСабтаски для эпика 'Подготовка к экзамену':");
-        for (Subtask subtask : manager.getSubtasksByEpicId(epic1.getId())) {
-            System.out.println(subtask);
+        System.out.println("\nИстория просмотров:");
+        for (Task task : taskManager.getHistory()) {
+            System.out.println(task);
         }
 
-        System.out.println("\nСабтаски для эпика 'Путешествие':");
-        for (Subtask subtask : manager.getSubtasksByEpicId(epic2.getId())) {
-            System.out.println(subtask);
+        System.out.println("\nУдаление задачи 'Купить продукты'");
+        taskManager.removeTask(task1.getId());
+        for (Task task : taskManager.getAllTasks()) {
+            System.out.println(task);
+        }
+
+        System.out.println("\nУдаление эпика 'Путешествие'");
+        taskManager.removeEpic(epic2.getId());
+        for (Epic epic : taskManager.getAllEpics()) {
+            System.out.println(epic);
+        }
+
+        System.out.println("\nИстория просмотров после удаления:");
+        for (Task task : taskManager.getHistory()) {
+            System.out.println(task);
         }
     }
 }
-

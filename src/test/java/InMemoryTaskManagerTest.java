@@ -1,8 +1,6 @@
 import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import java.util.List;
 
 class InMemoryTaskManagerTest {
@@ -15,7 +13,7 @@ class InMemoryTaskManagerTest {
 
     @Test
     void addTaskAndHistory() {
-        Task task = new Task(1, "Task 1", "Description 1");
+        Task task = new Task("Task 1", "Description 1");
         taskManager.addTask(task);
 
         taskManager.getTask(task.getId());

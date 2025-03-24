@@ -10,7 +10,7 @@ class InMemoryHistoryManagerTest {
     @BeforeEach
     void setUp() {
         historyManager = new InMemoryHistoryManager();
-        task = new Task(1, "History Task", "Tracking");
+        task = new Task("History Task", "Tracking");
     }
 
     @Test
@@ -23,4 +23,3 @@ class InMemoryHistoryManagerTest {
         assertEquals(task, history.get(0), "Добавленная задача не соответствует сохранённой");
     }
 }
-

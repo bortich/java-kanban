@@ -5,8 +5,7 @@ public class Task {
     protected String description;
     protected Status status;
 
-    public Task (Integer id, String name, String description) {
-        this.id = id;
+    public Task (String name, String description) {
         this.name = name;
         this.description = description;
         this.status = Status.NEW;
